@@ -1,0 +1,17 @@
+#!name=iQOO社区 [签到]
+#!desc=iQOO社区自动签到模块。打开 iQOO社区 App 即可自动获取 Cookie，每天定时自动签到。
+#!category=签到
+#!argument=cron:40 8 * * *,script:百度贴吧[Cookie],mitm:hostname
+#!argument.cron={ "name": "定时签到", "desc": "Cron表达式，默认每天早上 08:40 执行。", "type": "string", "default": "40 8 * * *" }
+#!argument.script={ "name": "禁用脚本", "desc": "禁用获取 Cookie 脚本，输入 # 表示禁用。", "type": "string", "default": "" }
+#!argument.mitm={ "name": "禁用 MITM", "desc": "禁用 MITM 主机名，输入 # 表示禁用。", "type": "string", "default": "" }
+
+[Script]
+# {{{script}}}获取 Cookie
+iqoo_cookie = type=http-request,pattern=^https?://.*\.vivo\.com\.cn/v1/user/info,script-path=https://gist.githubusercontent.com/Sliverkiss/bfc5527ad3ea8ac7b0820ca442442452/raw/iqoo.js,requires-body=true
+
+# 定时签到
+iqoo_checkin = type=cron,cronexp="{{{cron}}}",script-path=https://gist.githubusercontent.com/Sliverkiss/bfc5527ad3ea8ac7b0820ca442442452/raw/iqoo.js,timeout=60,wake-system=true
+
+[MITM]
+hostname = {{{mitm}}} *.vivo.com.cn, *.iqoo.com
